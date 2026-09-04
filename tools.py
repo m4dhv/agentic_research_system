@@ -12,7 +12,7 @@ _key = os.getenv("TAVILY_API_KEY")
 tavily = TavilyClient(api_key=_key) if _key else None
 
 #RESULTS DEPTH
-_DEPTH_RESULTS = {"quick": 3, "standard": 5, "deep": 7}
+_DEPTH_RESULTS = {"quick": 3, "standard": 5, "deep": 10}
 _max_results = 5  # default
 
 #SOURCE CITATION

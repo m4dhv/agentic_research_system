@@ -8,10 +8,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-#LLM Configuration
-llm = ChatGoogleGenerativeAI(
-    model = "gemini-3.5-flash-lite")
-
+# LLM Initialization
+llm = None
+writer_chain = None
+critic_chain = None
 
 #Search Agent Configuration
 def build_search_agent():
@@ -51,7 +51,6 @@ Instructions:
 """
     )
 
-
 #Writer Chain 
 
 writer_prompt = ChatPromptTemplate.from_messages([
@@ -74,11 +73,6 @@ Maintain an objective, analytical, and authoritative tone throughout.
 """)
 ])
 
-
-
-
-writer_chain = writer_prompt | llm | StrOutputParser()
-
 #Critic Chain
 
 critic_prompt = ChatPromptTemplate.from_messages([
@@ -100,11 +94,6 @@ Provide a constructive review structured as:
 - Final Verdict: A short, balanced closing summary
 """)
 ])
-
-
-
-critic_chain = critic_prompt | llm | StrOutputParser()
-
 
 def init_llm(gemini_api_key: str | None = None):
     global llm, writer_chain, critic_chain
