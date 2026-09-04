@@ -8,7 +8,8 @@ from rich import print
 
 load_dotenv()
 
-tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
+_key = os.getenv("TAVILY_API_KEY")
+tavily = TavilyClient(api_key=_key) if _key else None
 
 #RESULTS DEPTH
 _DEPTH_RESULTS = {"quick": 3, "standard": 5, "deep": 7}

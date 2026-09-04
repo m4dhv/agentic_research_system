@@ -10,8 +10,7 @@ load_dotenv()
 
 #LLM Configuration
 llm = ChatGoogleGenerativeAI(
-    model = "gemini-2.5-flash",
-    temperature = 0)
+    model = "gemini-3.5-flash-lite")
 
 
 #Search Agent Configuration
@@ -32,9 +31,8 @@ Instructions:
 URL: <url>
 Key Findings: <concise summary of critical facts/data points>
 
-Ensure all source URLs and index numbers are accurately preserved."""
-
-    )
+Ensure all source URLs and index numbers are accurately preserved.
+""" )
     
 #Reader Agent Configuration
 def build_reader_agent():
@@ -49,28 +47,30 @@ Instructions:
 1. Evaluate the search results and select the single most authoritative, content-rich URL for the topic.
 2. Use the scrape_url tool to extract the complete page text.
 3. Synthesize and present the scraped content clearly, highlighting core data, technical specifics, and contextual nuance.
-4. If valid URLs exist in the provided search results, always proceed with scraping."""
+4. If valid URLs exist in the provided search results, always proceed with scraping.
+"""
     )
 
 
-#Writer Chain LCEL 
+#Writer Chain 
 
 writer_prompt = ChatPromptTemplate.from_messages([
-    ("system", "You are a Senior Research Synthesizer. You produce comprehensive, analytical executive dossiers with clean in-text citations [1], [2]."),
-    ("human", """Synthesize a rigorous, detailed research dossier on the following subject:
+    ("system", "You are a Senior Research Synthesizer. You produce comprehensive, analytical executive reports with clean in-text citations [1], [2]."),
+    ("human", """Synthesize a rigorous, detailed research report on the following subject:
 
 Topic: {topic}
 
 Gathered Intelligence:
 {research}
 
-Dossier Requirements:
-1. Executive Summary: High-level overview of the current landscape.
+Report Requirements:
+1. Introduction: High-level overview of the current landscape.
 2. In-Depth Analysis: Minimum of 3 detailed thematic sections exploring key developments, data, and perspectives. Use precise numbered in-text citations (e.g. [1], [2]) directly tied to the numbered search sources. Never use placeholder citations like '[Scraped Content]'.
-3. Strategic Outlook: Future implications, trends, or potential challenges.
+3. Conclusion: Future implications, trends, or potential challenges.
 4. References: List all cited sources corresponding directly to their citation numbers (e.g. [1] Title - URL).
 
 Maintain an objective, analytical, and authoritative tone throughout.
+
 """)
 ])
 
@@ -83,7 +83,7 @@ writer_chain = writer_prompt | llm | StrOutputParser()
 
 critic_prompt = ChatPromptTemplate.from_messages([
     ("system", "You are a constructive Senior Research Editor and Reviewer. Provide a balanced, fair, and actionable critique of the research dossier."),
-    ("human", """Review the following research dossier fairly and constructively:
+    ("human", """Review the following research report honestly and constructively:
 
 Report:
 {report}
@@ -112,10 +112,8 @@ def init_llm(gemini_api_key: str | None = None):
     if not key:
         raise ValueError("Gemini API key required. Set GEMINI_API_KEY in .env or pass it explicitly.")
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash",
-        temperature=0,
+        model="gemini-3.5-flash-lite",
         api_key=key,
     )
     writer_chain = writer_prompt | llm | StrOutputParser()
     critic_chain = critic_prompt | llm | StrOutputParser()
-
